@@ -65,3 +65,6 @@ jobs:
       # -a : 전부
       # -v : 모두 출력해달라
       # -z : 권한, 소유자, 그룹 등 유지
+
+      # pk => pem으로 바꿔야 함
+      # puttygen에서 Conversion => Export openSSH key => ppk 누르고 .pem으로 확장자 변경
