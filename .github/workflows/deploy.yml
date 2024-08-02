@@ -10,7 +10,7 @@ on:
 
 jobs:
   #어떤 작업을 할지
-  bulid:
+  test:
     runs-on: ubuntu-latest
     # 작업 환경
     steps:
@@ -19,3 +19,49 @@ jobs:
         # 작업명 testing이고
         run: echo "now test"
       # 작업 내용은 echo "now test"
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4 # import
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Add SSH Key
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.EC2_KEY }}
+      # setting - security - secrets and variables- action - repository secret
+      # ${{}} 중괄호 두 개 넣어놓기
+
+      - name: Install dependencies of project
+        working-directory: ./
+        run: npm i
+
+      - name: Build project
+        working-directory: ./
+        run: npm run build
+
+      - name: Ensure SSH directory exists
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+      - name: Add SSH known hosts
+        run: ssh-keyscan -H ${{secrets.EC2_HOST}} >> ~/.ssh/known_hosts
+
+      - name: Copy files to EC2
+        run: |
+          ssh ${{secrets.EC2_USER}}@${{secrets.EC2_HOST}} "mkdir -p /var/www/html"
+          rsync -avz -e "ssh" ./build ${{secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/html
+      # rsync == filezilla
+      # ./build ${{secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/html == 현재 폴더의 build 폴더를 EC2유저로 EC2 인스턴스(HOST)에 접속해서 /var/www/html 폴더에 복사해달라
+      # -e "ssh" == 접속 방법에 대한 설정
+      # -avz == 설정, 옵션
+      # -a : 전부
+      # -v : 모두 출력해달라
+      # -z : 권한, 소유자, 그룹 등 유지
