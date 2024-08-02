@@ -1,0 +1,21 @@
+# XML을 대체하는 문서 / YML, YXML
+name: Deploy React to EC2
+# name: 액션명
+
+on:
+  push:
+    branches:
+      - main
+# main branch에 푸쉬됐을때 작동함
+
+jobs:
+  #어떤 작업을 할지
+  bulid:
+    runs-on: ubuntu-latest
+    # 작업 환경
+    steps:
+      # 작업들을 순서에 맞춰서 작성
+      - name: "testing"
+        # 작업명 testing이고
+        run: echo "now test"
+      # 작업 내용은 echo "now test"
