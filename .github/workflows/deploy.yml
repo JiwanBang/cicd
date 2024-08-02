@@ -57,7 +57,7 @@ jobs:
       - name: Copy files to EC2
         run: |
           ssh ${{secrets.EC2_USER}}@${{secrets.EC2_HOST}} "mkdir -p /var/www/html"
-          rsync -avz -e "ssh" ./build ${{secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/html
+          rsync -avz -e "ssh" ./build ${{secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/www/html
       # rsync == filezilla
       # ./build ${{secrets.EC2_USER}}@${{secrets.EC2_HOST}}:/var/html == 현재 폴더의 build 폴더를 EC2유저로 EC2 인스턴스(HOST)에 접속해서 /var/www/html 폴더에 복사해달라
       # -e "ssh" == 접속 방법에 대한 설정
@@ -66,5 +66,5 @@ jobs:
       # -v : 모두 출력해달라
       # -z : 권한, 소유자, 그룹 등 유지
 
-      # pk => pem으로 바꿔야 함
+      # ppk => pem으로 바꿔야 함(ubuntu 환경이기 때문에)
       # puttygen에서 Conversion => Export openSSH key => ppk 누르고 .pem으로 확장자 변경
